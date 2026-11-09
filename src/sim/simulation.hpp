@@ -53,6 +53,25 @@ private:
     int chunks_y_ = 0;
     std::vector<std::uint8_t> awake_;       // chunk awake this tick
     std::vector<std::uint8_t> awake_next_;  // chunk awake next tick
+    std::vector<std::uint8_t> dirty_;
+    std::vector<int> active_;
+    std::vector<float> heat_;
+    std::vector<std::uint8_t> flowing_rows_;
+    // Cell::clock is the compact visible stamp. The full stamp prevents its
+    // eight-bit wraparound (and sleeping cells' old clocks) from skipping moves.
+    std::vector<std::uint64_t> moved_at_;
+    std::uint64_t epoch_ = 0;
+    bool stepping_ = false;
+
+    void changed(int x, int y);
+    void replace(int x, int y, Material material, float temperature);
+    void interact(int x, int y);
+    void evolve(int x, int y);
+    void diffuse_heat();
+    void move(int x, int y);
+    void wake_flow(int y);
+    bool can_move(int x, int y, int tx, int ty, bool sideways = false) const;
+    bool try_move(int x, int y, int tx, int ty, bool sideways = false);
 };
 
 }  // namespace gf
