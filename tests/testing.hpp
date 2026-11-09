@@ -85,6 +85,18 @@ std::string show(const T& value) {
                                           " != " + ::testing::show(testing_b_));                \
     } while (0)
 
+#define REQUIRE_EQ(a, b)                                                                        \
+    do {                                                                                        \
+        const auto& testing_a_ = (a);                                                           \
+        const auto& testing_b_ = (b);                                                           \
+        if (!(testing_a_ == testing_b_)) {                                                      \
+            ::testing::report_failure(__FILE__, __LINE__,                                       \
+                                      "REQUIRE_EQ(" #a ", " #b "): " + ::testing::show(testing_a_) + \
+                                          " != " + ::testing::show(testing_b_));                \
+            throw ::testing::RequireFailed{};                                                   \
+        }                                                                                       \
+    } while (0)
+
 #define REQUIRE(cond)                                                                  \
     do {                                                                               \
         if (!(cond)) {                                                                 \
